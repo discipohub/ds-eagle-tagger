@@ -2,7 +2,7 @@
 
 ## 0.7.2
 
-- Windows 插件、本地推理引擎、测试与构建脚本重新以 MIT License 开源发布。
+- Windows 插件、本地推理引擎与构建脚本以 MIT License 开源发布。
 - 修复安装结束时隐藏真实引擎验证错误的问题。
 - 安装界面现在会区分 Visual C++ 运行库、NVIDIA / CUDA 组件和权限拦截，并给出对应处理办法。
 - 安装诊断同时保存到 `%LOCALAPPDATA%\EagleAutoTagger\logs\setup.log`，方便远程排查。

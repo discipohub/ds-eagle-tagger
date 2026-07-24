@@ -8,7 +8,7 @@
 
 [下载 Windows 最新版](https://github.com/discipohub/ds-eagle-tagger/releases/latest) · [问题反馈](https://github.com/discipohub/ds-eagle-tagger/issues)
 
-项目源码、测试与构建脚本均在本仓库公开，采用 MIT License。可直接下载成品安装包，也可以自行审查和构建。
+项目源代码在本仓库公开，采用 MIT License。普通用户只需下载成品安装包，不需要配置源码环境。
 
 ## Windows 公开版
 
@@ -45,26 +45,15 @@
 - 支持仅预览、实时进度、速度与剩余时间、安全停止。
 - 每条失败记录都可在 Eagle 中单独定位，也可一次选中全部失败项。
 
-## 开发者运行方式
+## 源码说明
 
-开发脚本统一位于 `scripts/dev`，避免与插件源码混在仓库根目录：
-
-- `scripts/dev/install.bat`：建立开发环境。
-- `scripts/dev/run-dryrun.bat`：最多预览 20 张，不写入 Eagle。
-- `scripts/dev/run.bat`：处理整个图库。
-- `scripts/dev/run-folder.bat`：粘贴一个或多个 Eagle 文件夹链接后处理。
-
-插件与唯一一份 Python 引擎源码均位于 `eagle-plugin`。开发者可直接加载该目录；公开安装包优先使用 `%LOCALAPPDATA%\EagleAutoTagger\engine`，不依赖固定磁盘或项目路径。
-
-发布包使用 `scripts/build-public-plugin.ps1` 构建。测试、文档、构建脚本与插件源码分别归入对应目录。
+插件界面和本地 Python 推理引擎均位于 `eagle-plugin`，发布包使用 `scripts/build-public-plugin.ps1` 构建。成品安装包不依赖开发机磁盘或项目路径。
 
 ## 模型与设置
 
 默认模型为 `SmilingWolf/wd-eva02-large-tagger-v3`，锁定 revision、文件大小与 SHA-256。模型更适合动漫、插画和风格化游戏美术；写实照片、纯 Logo、复杂排版和 3D 渲染可能出现误识别。
 
 主要设置包括普通标签阈值、角色标签阈值、每张标签上限、是否写入 rating 分级标签、Logo / 文字图人物误判过滤和仅预览模式。
-
-不要把 API token 写入公开包中的 `config.json`。本地开发可使用环境变量 `EAGLE_TOKEN` 或不进入版本控制的 `config.local.json`。
 
 ## 隐私与卸载
 
