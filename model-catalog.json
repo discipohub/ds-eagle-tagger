@@ -1,0 +1,29 @@
+{
+  "schema_version": 1,
+  "channel": "stable",
+  "releases": [
+    {
+      "id": "wd-eva02-large-tagger-v3-fa2b83fd",
+      "sequence": 1,
+      "name": "WD14 EVA02 Large Tagger v3",
+      "version": "v3 · fa2b83fd",
+      "model_repo": "SmilingWolf/wd-eva02-large-tagger-v3",
+      "model_revision": "fa2b83fd2d68b3d994e22fed5859d7cc99e1cdb0",
+      "approved_at": "2026-07-23",
+      "min_engine_version": "0.5.0",
+      "notes": "当前稳定版本。适用于动漫、插画与风格化游戏美术。",
+      "model_hashes": {
+        "model.onnx": "9e768793060c7939b277ccb382783e8670e8a042d29d77aa736be0c8cc898bfc",
+        "selected_tags.csv": "298633d94d0031d2081c0893f29c82eab7f0df00b08483ba8f29d1e979441217"
+      },
+      "model_sizes": {
+        "model.onnx": 1260435999,
+        "selected_tags.csv": 308468
+      },
+      "model_mirrors": [
+        "https://huggingface.co",
+        "https://hf-mirror.com"
+      ]
+    }
+  ]
+}

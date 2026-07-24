@@ -1,0 +1,27 @@
+{
+  "id": "b57129b4-56cb-4d39-a30f-e882b3d5f81c",
+  "version": "0.7.2",
+  "platform": "win",
+  "arch": "x64",
+  "name": "ds Eagle Tagger",
+  "logo": "./logo.png",
+  "keywords": ["ds", "AI", "tag", "WD14", "Eagle tagger"],
+  "devTools": false,
+  "fallbackLanguage": "zh_CN",
+  "languages": ["zh_CN"],
+  "main": {
+    "url": "index.html",
+    "width": 1280,
+    "height": 800,
+    "minWidth": 1040,
+    "minHeight": 680,
+    "frame": true,
+    "resizable": true,
+    "maximizable": true,
+    "minimizable": true,
+    "fullscreenable": false,
+    "alwaysOnTop": false,
+    "multiple": false,
+    "backgroundColor": "#f7f5f1"
+  }
+}

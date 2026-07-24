@@ -1,0 +1,273 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>ds Eagle Tagger</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <div id="app" class="app-shell">
+      <aside class="sidebar">
+        <div class="brand">
+          <img class="brand-mark" src="logo.png" alt="" />
+          <div>
+            <h1>ds Eagle Tagger</h1>
+            <p>WD14 · 本地 GPU</p>
+          </div>
+        </div>
+
+        <nav class="steps" aria-label="处理步骤">
+          <button class="step active" data-page="select"><span>1</span>选择范围</button>
+          <button class="step" data-page="confirm"><span>2</span>确认汇总</button>
+          <button class="step" data-page="progress"><span>3</span>识别进度</button>
+          <button class="step" data-page="result"><span>4</span>结果 / 失败</button>
+        </nav>
+
+        <div class="creator-credit"><span>Created by</span><strong>discipo</strong></div>
+        <button id="settings-nav" class="settings-link">⚙ <span>设置</span></button>
+      </aside>
+
+      <main class="main">
+        <header class="status-bar">
+          <div class="status-group">
+            <span id="eagle-status" class="status-pill good">● Eagle 已连接</span>
+            <span id="engine-status" class="status-pill neutral">● 正在检查 GPU…</span>
+          </div>
+        </header>
+
+        <section id="page-setup" class="page setup-page">
+          <p class="eyebrow">首次使用</p>
+          <h2 id="setup-title">安装本地 GPU 引擎</h2>
+          <p id="setup-lead" class="lead">只需安装一次。完成后，识别过程始终在这台电脑上运行。</p>
+          <div class="setup-panel">
+            <div class="setup-intro">
+              <div class="setup-mark">GPU</div>
+              <div>
+                <h3>准备识别环境</h3>
+                <p>插件会在后台安装 Python 3.12 和 NVIDIA 推理组件；首次识别时再下载约 1.26 GB 的 WD14 模型。</p>
+              </div>
+            </div>
+            <div class="setup-requirements">
+              <div><strong>系统</strong><span>Windows 10 / 11 · x64</span></div>
+              <div><strong>显卡</strong><span>NVIDIA GPU · 建议 6 GB 以上显存</span></div>
+              <div><strong>空间</strong><span>建议预留 5 GB</span></div>
+              <div><strong>网络</strong><span>安装组件和模型时需要联网</span></div>
+            </div>
+            <div class="privacy-note">
+              <strong>隐私说明</strong>
+              <span>图片和标签均在本机处理，不会上传；联网仅用于下载运行组件和模型。</span>
+            </div>
+            <div id="setup-log-panel" class="setup-log-panel hidden"><pre id="setup-log"></pre></div>
+            <div class="setup-actions">
+              <span>点击安装即表示同意在本机用户目录中创建运行环境。</span>
+              <button id="install-engine" class="primary-button">开始安装</button>
+            </div>
+          </div>
+        </section>
+
+        <section id="page-select" class="page active">
+          <p class="eyebrow">第一步</p>
+          <h2>选择要打标的范围</h2>
+          <p class="lead">直接使用 Eagle 当前状态，不再需要复制文件夹链接。</p>
+
+          <div class="scope-grid">
+            <button class="scope-card active" data-scope="folder">
+              <span class="scope-icon">▣</span>
+              <strong>选择 Eagle 文件夹</strong>
+              <small>从完整列表中勾选一个或多个</small>
+            </button>
+            <button class="scope-card" data-scope="selected">
+              <span class="scope-icon">✓</span>
+              <strong>只打标当前选中的图片</strong>
+              <small>仅处理 Eagle 中已选中的项目</small>
+            </button>
+            <button class="scope-card" data-scope="library">
+              <span class="scope-icon">◇</span>
+              <strong>处理整个图库</strong>
+              <small>扫描当前图库中的全部图片</small>
+            </button>
+          </div>
+
+          <div class="summary-card">
+            <div class="summary-head">
+              <div>
+                <span class="field-label">当前选择</span>
+                <h3 id="scope-title">尚未读取</h3>
+              </div>
+              <button id="scan-button" class="secondary-button">读取 Eagle 当前选择</button>
+            </div>
+            <div id="folder-picker" class="folder-picker">
+              <div class="folder-toolbar">
+                <label class="folder-search-wrap">
+                  <span aria-hidden="true">⌕</span>
+                  <input id="folder-search" type="search" placeholder="搜索文件夹…" autocomplete="off" />
+                </label>
+                <div class="folder-actions">
+                  <button id="pick-current-folders" class="mini-button">勾选当前文件夹</button>
+                  <button id="refresh-folders" class="mini-button">刷新</button>
+                  <button id="clear-folders" class="mini-button">清空</button>
+                  <button id="confirm-folders" class="mini-button folder-confirm-button" disabled>确认并统计</button>
+                </div>
+              </div>
+              <div class="folder-picker-meta">
+                <span id="folder-list-status">正在读取文件夹列表…</span>
+                <strong id="selected-folder-count">已选择 0 个文件夹</strong>
+              </div>
+              <div id="folder-list" class="folder-list" aria-label="Eagle 文件夹列表"></div>
+              <div class="folder-picker-footer">
+                <span>普通勾选只选当前；“含子级”会选中全部下级，重复图片自动去重。</span>
+              </div>
+            </div>
+            <div id="folder-selection-summary" class="selection-summary">
+              <span class="selection-summary-label">当前选择</span>
+              <div id="folder-chips" class="chips"></div>
+            </div>
+            <div id="selection-empty" class="empty-hint">确认并统计后显示图片数量。</div>
+            <div id="selection-stats" class="stats hidden">
+              <div><strong id="total-count">0</strong><span>图片总数</span></div>
+              <div><strong id="todo-count">0</strong><span id="todo-count-label">待处理未标签</span></div>
+              <div><strong id="skip-count">0</strong><span id="tagged-count-label">已有标签跳过</span></div>
+            </div>
+          </div>
+
+          <div class="tag-mode-panel">
+            <div>
+              <span class="field-label">标签处理方式</span>
+              <div id="tag-mode-options" class="segmented tag-mode-options">
+                <button class="active" data-tag-mode="untagged">仅处理无标签</button>
+                <button data-tag-mode="merge">补充已有标签</button>
+              </div>
+            </div>
+            <p id="tag-mode-hint">已有标签的图片会自动跳过，不会被修改。</p>
+          </div>
+
+          <div class="bottom-row">
+            <div class="batch-control">
+              <span class="field-label">每次推理张数</span>
+              <div id="batch-options" class="segmented">
+                <button class="active" data-batch="auto">自动 4</button>
+                <button data-batch="1">1</button>
+                <button data-batch="2">2</button>
+                <button data-batch="4">4</button>
+                <button data-batch="8">8</button>
+              </div>
+              <small id="batch-hint">正在检测显卡与可用显存…</small>
+            </div>
+            <button id="to-confirm" class="primary-button" disabled>下一步 →</button>
+          </div>
+        </section>
+
+        <section id="page-confirm" class="page">
+          <p class="eyebrow">第二步</p>
+          <h2>确认本次任务</h2>
+          <p class="lead">确认后才会加载模型并开始识别。</p>
+          <div class="confirm-panel">
+            <div class="confirm-line"><span>处理范围</span><strong id="confirm-scope">—</strong></div>
+            <div class="confirm-line"><span>待处理图片</span><strong id="confirm-count">0 张</strong></div>
+            <div class="confirm-line"><span>GPU 批量</span><strong id="confirm-batch">4 张/批</strong></div>
+            <div class="confirm-line"><span>标签处理</span><strong id="confirm-tag-mode">已有标签自动跳过</strong></div>
+            <div class="notice">图片文件本身不会被修改；仅通过 Eagle 官方接口写入标签。</div>
+          </div>
+          <div class="action-row">
+            <button class="secondary-button" data-back="select">← 返回修改</button>
+            <button id="start-button" class="primary-button">确认并开始识别 →</button>
+          </div>
+        </section>
+
+        <section id="page-progress" class="page">
+          <p class="eyebrow">第三步</p>
+          <h2>正在识别</h2>
+          <p id="progress-message" class="lead">正在启动本地 GPU 引擎…</p>
+          <div class="progress-panel">
+            <div class="progress-numbers"><strong id="progress-percent">0%</strong><span id="progress-fraction">0 / 0</span></div>
+            <div class="progress-track"><div id="progress-fill"></div></div>
+            <div class="progress-meta">
+              <div><span>当前项目</span><strong id="current-item">等待中</strong></div>
+              <div><span>处理速度</span><strong id="progress-rate">—</strong></div>
+              <div><span>剩余时间</span><strong id="progress-eta">—</strong></div>
+              <div><span>写入成功</span><strong id="written-count">0</strong></div>
+            </div>
+          </div>
+          <div class="log-panel"><pre id="live-log">任务准备中…</pre></div>
+          <div class="action-row right"><button id="stop-button" class="danger-button">停止任务</button></div>
+        </section>
+
+        <section id="page-result" class="page">
+          <p class="eyebrow">完成</p>
+          <h2 id="result-title">处理完成</h2>
+          <p id="result-message" class="lead">本次任务已结束。</p>
+          <div class="result-grid">
+            <div class="result-card success"><strong id="result-success">0</strong><span>成功写入</span></div>
+            <div class="result-card"><strong id="result-skipped">0</strong><span>跳过</span></div>
+            <div class="result-card failure"><strong id="result-failed">0</strong><span>失败</span></div>
+          </div>
+          <div id="failure-list" class="failure-list hidden"></div>
+          <div class="action-row">
+            <button id="select-failures" class="secondary-button hidden">在 Eagle 中选中失败项目</button>
+            <button id="new-task" class="primary-button">开始新任务</button>
+          </div>
+        </section>
+
+        <section id="page-settings" class="page">
+          <p class="eyebrow">高级设置</p>
+          <h2>识别设置</h2>
+          <p class="lead">识别参数已针对当前 WD14 模型调优；GPU Batch 会根据可用显存自动适配。</p>
+          <div class="settings-panel">
+            <label>普通标签阈值<input id="general-threshold" type="number" min="0" max="1" step="0.05" value="0.35" /></label>
+            <label>角色标签阈值<input id="character-threshold" type="number" min="0" max="1" step="0.05" value="0.75" /></label>
+            <label>每张模型标签上限<input id="max-tags" type="number" min="1" max="200" step="1" value="50" /></label>
+            <label class="check-label"><input id="include-rating" type="checkbox" checked /> 写入 rating 分级标签</label>
+            <label class="check-label"><input id="filter-graphic-person-tags" type="checkbox" checked /> 过滤 Logo / 文字图中的人物误判</label>
+            <label class="check-label"><input id="preview-only" type="checkbox" /> 仅预览，不写入 Eagle</label>
+          </div>
+          <div class="engine-maintenance">
+            <div><span>本地引擎位置</span><code id="engine-location">—</code></div>
+            <button id="repair-engine" class="secondary-button">修复 / 重新安装引擎</button>
+          </div>
+          <div class="model-maintenance">
+            <div class="model-version-copy">
+              <span>当前模型</span>
+              <strong><span id="current-model-name">WD14</span> · <span id="current-model-version">—</span></strong>
+              <small>Revision <code id="current-model-revision">—</code></small>
+              <small id="model-update-status">为保证稳定性，仅提供已完成兼容性验证的模型版本。</small>
+            </div>
+            <div class="model-maintenance-actions">
+              <button id="import-local-model" class="secondary-button">导入本地模型</button>
+              <button id="check-model-update" class="secondary-button">检查模型更新</button>
+            </div>
+          </div>
+          <p class="model-local-note">无法在线下载时，可从网盘取得 <code>model.onnx</code> 与 <code>selected_tags.csv</code>，在这里选择并导入；插件会先校验文件再启用。</p>
+          <div id="model-update-card" class="model-update-card hidden">
+            <div>
+              <strong id="model-update-title">发现新模型</strong>
+              <p id="model-update-notes"></p>
+              <small id="model-update-size"></small>
+            </div>
+            <div id="model-update-progress" class="model-update-progress hidden">
+              <span id="model-update-progress-label">准备下载…</span>
+              <div><i id="model-update-progress-fill"></i></div>
+            </div>
+            <button id="download-model-update" class="primary-button">下载并更新</button>
+          </div>
+          <div class="history-maintenance">
+            <div class="history-location-copy">
+              <span>处理记录位置</span>
+              <code id="history-location">—</code>
+              <small id="history-status">正在检查处理记录…</small>
+            </div>
+            <div class="history-location-actions">
+              <button id="reset-history-location" class="text-button">恢复默认</button>
+              <button id="choose-history-location" class="secondary-button">选择其他硬盘</button>
+            </div>
+          </div>
+          <p class="history-note">用于避免在相同模型和设置下重复补充标签。可保存到任意可写硬盘；更改位置时可迁移、保留备份或新建空记录库。</p>
+          <div class="action-row"><button id="settings-done" class="primary-button">保存设置</button></div>
+        </section>
+
+        <div id="toast" class="toast hidden"></div>
+      </main>
+    </div>
+    <script src="plugin.js"></script>
+  </body>
+</html>

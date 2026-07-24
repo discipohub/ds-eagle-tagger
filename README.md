@@ -1,121 +1,91 @@
-# ds Eagle Tagger · Windows 版
+# ds Eagle Tagger
 
-用 WD14 模型给 [Eagle](https://eagle.cool) 素材库自动打标签。识别完全在本机运行，图片不会上传；整个流程只显示插件窗口，不会额外弹出命令行。
+一款轻量 Eagle 插件，通过一键安装的本地 GPU 引擎生成 WD14 英文标签并写回 Eagle。既可仅处理无标签图片，也可保留手动标签并补充模型新标签。识别完全在本机完成，运行期间不会出现额外的命令行窗口。
 
-[![下载](https://img.shields.io/badge/下载-v0.7.1-f4511e)](../../releases/latest)
+[![下载](https://img.shields.io/badge/下载-v0.7.2-f4511e)](https://github.com/discipohub/ds-eagle-tagger/releases/latest)
 ![平台](https://img.shields.io/badge/平台-Windows%2010%20%2F%2011-0078d4)
-![显卡](https://img.shields.io/badge/推理-NVIDIA%20GPU-76b900)
-![本地运行](https://img.shields.io/badge/图片-100%25%20本地-2e7d32)
+![许可证](https://img.shields.io/badge/License-MIT-green)
 
-> macOS（Apple Silicon）版本见 [ds-eagle-tagger-mac](https://github.com/discipohub/ds-eagle-tagger-mac)。
+[下载 Windows 最新版](https://github.com/discipohub/ds-eagle-tagger/releases/latest) · [问题反馈](https://github.com/discipohub/ds-eagle-tagger/issues)
 
-当前处于公开测试阶段。本仓库提供安装包、使用说明、更新记录和问题反馈；后续源码暂时在私有仓库维护，待测试稳定后再评估开放。
+项目源码、测试与构建脚本均在本仓库公开，采用 MIT License。可直接下载成品安装包，也可以自行审查和构建。
 
----
+## Windows 公开版
 
-## 运行要求
+公开包采用单个 `.eagleplugin` 文件：
 
-| 项目 | 要求 |
-|---|---|
-| 系统 | Windows 10 / 11，64 位 |
-| 显卡 | NVIDIA GPU，建议至少 6 GB 显存 |
-| Eagle | 安装并保持运行 |
-| 磁盘 | 建议预留 5 GB |
-| 网络 | 首次安装运行组件和取得模型时需要 |
+1. 用户双击插件包，由 Eagle 完成安装。
+2. 首次打开时点击“开始安装”，插件会把本地引擎安装到 `%LOCALAPPDATA%\EagleAutoTagger\engine`。
+3. 首次识别时按需下载约 1.26 GB 的固定版本 WD14 模型；界面显示实时百分比、容量、速度和预计时间。
+4. 后续直接打开插件使用，不需要运行开发脚本或配置项目路径。
 
-插件会读取 NVIDIA 显卡型号和可用显存，自动推荐较保守的 Batch。识别过程中若显存不足，会按 8 → 4 → 2 → 1 自动降低，并记住当前显卡验证过的安全值。
+要求 Windows 10 / 11 x64、NVIDIA 显卡；建议至少 6 GB 显存并预留 5 GB 空间。插件包内不包含大体积模型。
 
-## 安装
+模型下载会自动尝试官方源与备用镜像，支持断点续传、Windows 下载通道兜底，并在完成后校验固定大小和 SHA-256；无法联网时不会加载不完整或来源不明的文件。
 
-1. 到 [Releases](../../releases/latest) 下载 `ds-Eagle-Tagger-0.7.1.eagleplugin`。
-2. 双击安装包，由 Eagle 完成导入。
-3. 在 Eagle 插件面板打开 ds Eagle Tagger。
-4. 点击“开始安装”，等待本地 Python 与 GPU 推理组件准备完成。
-5. 选择 Eagle 文件夹、当前选中的图片或整个图库，确认后开始识别。
+无法在线下载模型时，可从其他渠道取得 `model.onnx` 与 `selected_tags.csv`，在设置中点击“导入本地模型”。插件会校验固定大小与 SHA-256，两个文件完全匹配后才复制到模型缓存并启用。
 
-第一次识别需要取得约 1.26 GB 的 WD14 模型。界面会显示下载百分比、容量、速度和预计时间；支持断点续传，后续会直接复用本地缓存。
+首次安装本地引擎时，Python 会按中国科学技术大学镜像、GitHub 官方源的顺序尝试；GPU 依赖会按中国科学技术大学、清华大学、PyPI 官方源的顺序尝试。失败时保留下载缓存并自动切换，不需要用户手动配置镜像。
 
-安装程序会自动尝试可用的下载来源，失败时自动切换，无需手动配置。
+## 插件功能
 
-## 无网络导入模型
+- 读取完整 Eagle 文件夹树，在插件内搜索并勾选一个或多个逻辑文件夹。
+- 父文件夹可用“含子级 N”选择全部下级；已选文件夹可逐个移除。
+- 多文件夹图片逐个读取、合并并按 Eagle 项目 ID 去重。
+- 支持只处理 Eagle 当前选中的图片，或处理整个当前图库。
+- 默认跳过已有标签，写入前再次检查，不覆盖用户已有整理结果。
+- “补充已有标签”会保留原标签、追加模型新标签并自动去重。
+- 本地记录 Eagle 图片 ID、模型版本、识别设置和上次模型标签，避免相同条件下重复补充。
+- 处理记录可在设置中迁移到 D、E、N 等其他可写硬盘。
+- 支持检查维护者批准的模型清单、显示更新说明和大小，并在下载校验成功后安全切换模型。
+- 模型缓存按 revision 分目录保存，更新模型不会直接覆盖旧版本。
+- 支持 Batch 1 / 2 / 4 / 8、阈值、标签上限、rating 标签与 Logo / 文字图误识别过滤。
+- 启动时通过 NVIDIA 官方工具读取显卡型号和当前可用显存，自动选择保守的 Batch；无法读取显存时使用 Batch 2。
+- 推理遇到显存不足会按 8 → 4 → 2 → 1 自动降级，并按显卡记住已验证的安全值；用户仍可切换为手动 Batch。
+- 支持仅预览、实时进度、速度与剩余时间、安全停止。
+- 每条失败记录都可在 Eagle 中单独定位，也可一次选中全部失败项。
 
-如果无法在线取得 WD14 模型，可以从网盘等可信渠道获取：
+## 开发者运行方式
 
-- `model.onnx`，约 1.26 GB
-- `selected_tags.csv`，约 300 KB
+开发脚本统一位于 `scripts/dev`，避免与插件源码混在仓库根目录：
 
-进入插件“设置 → 导入本地模型”，同时选择这两个文件。插件完成完整性校验后才会写入模型缓存；失败不会破坏已有模型。
+- `scripts/dev/install.bat`：建立开发环境。
+- `scripts/dev/run-dryrun.bat`：最多预览 20 张，不写入 Eagle。
+- `scripts/dev/run.bat`：处理整个图库。
+- `scripts/dev/run-folder.bat`：粘贴一个或多个 Eagle 文件夹链接后处理。
 
-## 功能
+插件与唯一一份 Python 引擎源码均位于 `eagle-plugin`。开发者可直接加载该目录；公开安装包优先使用 `%LOCALAPPDATA%\EagleAutoTagger\engine`，不依赖固定磁盘或项目路径。
 
-- **三种识别范围**：选择一个或多个 Eagle 逻辑文件夹／当前选中的图片／整个图库。
-- **包含全部子级**：父文件夹可以一次选中全部下级文件夹，重复图片按 Eagle 项目 ID 去重。
-- **保护已有整理**：默认跳过已有标签，也可以保留手动标签并补充模型新标签。
-- **自动去重**：模型重复运行不会不断叠加相同标签。
-- **本地处理记录**：记录图片 ID、模型版本、阈值、标签数量和上次模型标签；记录位置可迁移到其他硬盘。
-- **显存自动适配**：自动推荐 Batch，显存不足时安全降级。
-- **模型更新**：只显示维护者验证过的模型版本，下载与校验成功后才切换。
-- **实时进度**：显示完成数量、速度、剩余时间和写入结果，支持安全停止。
-- **失败可定位**：失败项目可以逐个或批量在 Eagle 中定位。
-- **仅预览**：先查看预测结果，不写回 Eagle。
+发布包使用 `scripts/build-public-plugin.ps1` 构建。测试、文档、构建脚本与插件源码分别归入对应目录。
 
-## 已有标签的处理方式
+## 模型与设置
 
-默认模式会跳过任何已经有标签的图片，适合保护现有图库。
+默认模型为 `SmilingWolf/wd-eva02-large-tagger-v3`，锁定 revision、文件大小与 SHA-256。模型更适合动漫、插画和风格化游戏美术；写实照片、纯 Logo、复杂排版和 3D 渲染可能出现误识别。
 
-启用“补充已有标签”后：
+主要设置包括普通标签阈值、角色标签阈值、每张标签上限、是否写入 rating 分级标签、Logo / 文字图人物误判过滤和仅预览模式。
 
-1. 保留用户原来的全部标签；
-2. 只追加模型识别出的新标签；
-3. 自动去重；
-4. 根据本地处理记录判断模型或设置是否变化，避免无意义重复识别。
+不要把 API token 写入公开包中的 `config.json`。本地开发可使用环境变量 `EAGLE_TOKEN` 或不进入版本控制的 `config.local.json`。
 
-## 首次使用会慢，这是正常的
+## 隐私与卸载
 
-| 阶段 | 是否重复 | 说明 |
-|---|---|---|
-| 准备 Python 与 GPU 组件 | 一次性 | 取决于网络速度 |
-| 下载或导入 WD14 模型 | 一次性 | 约 1.26 GB |
-| 首次加载模型 | 每次启动一次 | 通常数秒 |
+图片、路径和标签均在本机处理；联网仅用于下载 Python 运行组件、推理依赖和模型。插件不包含账号、广告或遥测。
 
-以后打开插件会复用已经安装的引擎、依赖与模型。
+卸载插件后，如需同时删除引擎、模型和缓存，请先关闭插件，再手动删除 `%LOCALAPPDATA%\EagleAutoTagger`。完整说明见插件包内的 `PRIVACY.md` 与 `THIRD_PARTY_NOTICES.md`。
 
-## 隐私
+## 安装验证失败
 
-图片、文件路径、标签和处理记录都保存在本机。插件没有账号系统、广告、遥测或行为统计。
-
-联网仅用于下载运行组件、推理依赖、WD14 模型及维护者批准的模型目录。详见 [PRIVACY.md](PRIVACY.md)。
-
-## 卸载
-
-1. 在 Eagle 插件面板移除插件。
-2. 如果还要删除本地引擎、模型、下载缓存和默认处理记录，请关闭插件后删除：
+0.7.2 起，安装界面会显示本地推理引擎的真实错误，并把完整诊断写入：
 
 ```text
-%LOCALAPPDATA%\EagleAutoTagger
+%LOCALAPPDATA%\EagleAutoTagger\logs\setup.log
 ```
 
-仅卸载插件不会自动删除这个目录，避免重新安装时再次下载大体积模型。
-
-## 常见问题
-
-**识别结果为什么是英文标签？**  
-WD14 输出的是英文 Danbooru 风格标签，这是模型本身的特性。
-
-**模型下载失败怎么办？**  
-可以重试并让插件自动切换来源，也可以通过“导入本地模型”使用网盘取得的两个模型文件。
-
-**显存不足怎么办？**  
-保持 Batch 为“自动”。插件会降低批量；仍失败时手动选择 Batch 1。
-
-**少量图片识别失败正常吗？**  
-损坏、截断或格式无法识别的源文件可能失败。失败列表会显示原因，并支持在 Eagle 中定位原图。
-
-**纯 Logo 或文字图为什么会出现人物标签？**  
-WD14 更擅长动漫、插画和风格化游戏美术。插件默认启用 Logo／文字图人物误判过滤，但仍建议先用“仅预览”检查小范围结果。
+- Visual C++ 或 DLL 加载失败：安装最新的 [Microsoft Visual C++ v14 Redistributable（x64）](https://aka.ms/vc14/vc_redist.x64.exe)，重启后修复引擎。
+- NVIDIA、CUDA、cuDNN 或 cublas：更新 NVIDIA 驱动，重启后重试。
+- 拒绝访问：在安全软件中允许 Eagle 及 `%LOCALAPPDATA%\EagleAutoTagger` 下的本地 Python 运行。
 
 ## 作者
 
-由 [discipo](https://github.com/discipohub) 创建和维护。模型与第三方组件沿用各自的许可条款，详见 [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md)。
+由 [discipo](https://github.com/discipohub) 创建和维护。模型与第三方组件沿用各自的许可条款，详见 `eagle-plugin/THIRD_PARTY_NOTICES.md`。
 
-公开测试包的使用与再分发边界见 [LICENSE](LICENSE)。
+ds Eagle Tagger 源码采用 [MIT License](LICENSE)。

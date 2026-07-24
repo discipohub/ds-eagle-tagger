@@ -1,0 +1,25 @@
+{
+  "eagle_url": "http://localhost:41595",
+  "eagle_token": null,
+  "model_repo": "SmilingWolf/wd-eva02-large-tagger-v3",
+  "model_revision": "fa2b83fd2d68b3d994e22fed5859d7cc99e1cdb0",
+  "model_hashes": {
+    "model.onnx": "9e768793060c7939b277ccb382783e8670e8a042d29d77aa736be0c8cc898bfc",
+    "selected_tags.csv": "298633d94d0031d2081c0893f29c82eab7f0df00b08483ba8f29d1e979441217"
+  },
+  "model_sizes": {
+    "model.onnx": 1260435999,
+    "selected_tags.csv": 308468
+  },
+  "general_threshold": 0.35,
+  "character_threshold": 0.75,
+  "batch_size": 4,
+  "max_tags": 50,
+  "include_rating": true,
+  "filter_graphic_person_tags": true,
+  "model_mirrors": ["https://huggingface.co", "https://hf-mirror.com"],
+  "model_catalog_urls": [
+    "https://raw.githubusercontent.com/discipohub/ds-eagle-tagger/main/model-catalog.json"
+  ],
+  "model_catalog_timeout_seconds": 30
+}
