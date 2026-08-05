@@ -2,7 +2,7 @@
 
 一款轻量 Eagle 插件，通过一键安装的本地 GPU 引擎生成 WD14 英文标签并写回 Eagle。既可仅处理无标签图片，也可保留手动标签并补充模型新标签。识别完全在本机完成，运行期间不会出现额外的命令行窗口。
 
-[![下载](https://img.shields.io/badge/下载-v0.7.2-f4511e)](https://github.com/discipohub/ds-eagle-tagger/releases/latest)
+[![下载](https://img.shields.io/badge/下载-v0.7.3-f4511e)](https://github.com/discipohub/ds-eagle-tagger/releases/latest)
 ![平台](https://img.shields.io/badge/平台-Windows%2010%20%2F%2011-0078d4)
 ![许可证](https://img.shields.io/badge/License-PolyForm--NC-purple)
 
@@ -17,6 +17,8 @@
 3. 首次识别时自动下载约 1.26 GB 的 WD14 模型，后续直接使用。
 
 要求 Windows 10 / 11 x64、NVIDIA 显卡；建议至少 6 GB 显存并预留 5 GB 空间。
+
+0.7.3 起，若下载时遇到网络证书链异常，安装器会自动在内置安全证书和 Windows 系统证书之间切换重试。
 
 ## 插件功能
 
