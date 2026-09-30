@@ -1,12 +1,12 @@
 # ds Eagle Tagger
 
-一款轻量 Eagle 插件，通过一键安装的本地 GPU 引擎生成 WD14 英文标签并写回 Eagle。既可仅处理无标签图片，也可保留手动标签并补充模型新标签。识别完全在本机完成，运行期间不会出现额外的命令行窗口。
+一款轻量 Eagle 插件，通过一键安装的本地 GPU 引擎生成 WD14 标签，并按所选语言写回 Eagle。既可仅处理无标签图片，也可保留手动标签并补充模型新标签。识别完全在本机完成，运行期间不会出现额外的命令行窗口。
 
-[![下载](https://img.shields.io/badge/下载-v0.7.3-f4511e)](https://github.com/discipohub/ds-eagle-tagger/releases/latest)
+[![下载](https://img.shields.io/badge/下载-v0.8.0-f4511e)](https://github.com/discipohub/ds-eagle-tagger/releases/latest)
 ![平台](https://img.shields.io/badge/平台-Windows%2010%20%2F%2011-0078d4)
 ![许可证](https://img.shields.io/badge/License-PolyForm--NC-purple)
 
-[下载 Windows 最新版](https://github.com/discipohub/ds-eagle-tagger/releases/latest) · [问题反馈](https://github.com/discipohub/ds-eagle-tagger/issues)
+[下载 Windows 最新版](https://github.com/discipohub/ds-eagle-tagger/releases/latest) · [Mac 版介绍与下载](https://github.com/discipohub/ds-eagle-tagger-mac) · [问题反馈](https://github.com/discipohub/ds-eagle-tagger/issues)
 
 项目源代码采用 PolyForm Noncommercial 1.0.0。普通用户只需下载成品安装包，不需要配置源码环境。
 
