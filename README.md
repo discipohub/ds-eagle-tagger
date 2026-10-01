@@ -1,4 +1,4 @@
-# ds Eagle Tagger
+# DS Eagle Tagger
 
 一款轻量 Eagle 插件，通过一键安装的本地 GPU 引擎生成 WD14 标签，并按所选语言写回 Eagle。既可仅处理无标签图片，也可保留手动标签并补充模型新标签。识别完全在本机完成，运行期间不会出现额外的命令行窗口。
 
@@ -56,4 +56,4 @@
 
 由 [discipo](https://github.com/discipohub) 创建和维护。模型与第三方组件沿用各自的许可条款，详见 `eagle-plugin/THIRD_PARTY_NOTICES.md`。
 
-ds Eagle Tagger 源码采用 [PolyForm Noncommercial 1.0.0](LICENSE)，商业用途需[联系作者](https://github.com/discipohub/ds-eagle-tagger/issues)获得授权。
+DS Eagle Tagger 源码采用 [PolyForm Noncommercial 1.0.0](LICENSE)，商业用途需[联系作者](https://github.com/discipohub/ds-eagle-tagger/issues)获得授权。
